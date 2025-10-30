@@ -193,20 +193,20 @@ components:
     EnvelopeId:
       name: id
       in: path
-      required: true
-      description: The ID of the envelope
       schema:
         type: integer
         example: 1
+      required: true
+      description: The ID of the envelope
     
     TransactionId:
       name: id
       in: path
-      required: true
-      description: The ID of the transaction
       schema:
         type: integer
         example: 1
+      required: true
+      description: The ID of the transaction
         
   schemas:
   
@@ -302,7 +302,9 @@ components:
         description:
           type: string
           example: Dinner at a restaurant
-      required: [transactionType, amount]
+      required:
+        - transactionType
+        - amount
     
   responses:
 
