@@ -96,6 +96,74 @@ paths:
           description: Envelope deleted
         '404':
           description: Envelope not found
+          
+  /transactions:
+  
+    get:
+      tags: [Transactions]
+      summary: Get all transactions
+      responses:
+        '200':
+          description: List of transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+        '500':
+          description: Server error
+    
+    post:
+      tags: [Transactions]
+      summary: Create a new transaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionInput'
+      responses:
+        '201':
+          description: Transaction created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          description: Invalid input (e.g., insufficient balance, missing fields)
+        '404':
+          description: One or more envelopes not found
+        '500':
+          description: Server error
+          
+  /transactions/{id}:
+
+    get:
+      tags: [Transactions]
+      summary: Get transaction by ID
+      parameters:
+        - $ref: '#/components/parameters/TransactionId'
+      responses:
+        '200':
+          description: Transaction found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '404':
+          description: Transaction not found
+          
+    delete:
+      tags: [Transactions]
+      summary: Delete transaction by ID
+      parameters:
+        - $ref: '#/components/parameters/TransactionId'
+      responses:
+        '204':
+          description: Transaction deleted
+        '404':
+          description: Transaction not found
       
 components:
 
@@ -106,6 +174,15 @@ components:
       in: path
       required: true
       description: The ID of the envelope
+      schema:
+        type: integer
+        example: 1
+    
+    TransactionId:
+      name: id
+      in: path
+      required: true
+      description: The ID of the transaction
       schema:
         type: integer
         example: 1
@@ -144,3 +221,65 @@ components:
       required:
         - name
         - budget
+        
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        transactionType:
+          type: string
+          enum: [transfer, expense, income]
+          description: >
+            Type of transaction:
+            - transfer: move funds between envelopes
+            - expense: money spent from an envelope
+            - income: money added to an envelope
+          example: transfer
+        fromEnvelopeId:
+          type: integer
+          example: 1
+        toEnvelopeId:
+          type: integer
+          example: 2
+        amount:
+          type: number
+          format: float
+          example: 40.00
+        description:
+          type: string
+          example: Dinner at a restaurant
+        date:
+          type: string
+          format: date-time
+          readOnly: true
+          example: 2025-09-22T12:34:56Z
+          
+    TransactionInput:
+      type: object
+      properties:
+        transactionType:
+          type: string
+          enum: [transfer, expense, income]
+          description: >
+            Type of transaction:
+            - transfer: move funds between envelopes
+            - expense: money spent from an envelope
+            - income: money added to an envelope
+          example: transfer
+        fromEnvelopeId:
+          type: integer
+          example: 1
+        toEnvelopeId:
+          type: integer
+          example: 2
+        amount:
+          type: number
+          format: float
+          example: 40.0
+        description:
+          type: string
+          example: Dinner at a restaurant
+      required: [transactionType, amount]
+    
