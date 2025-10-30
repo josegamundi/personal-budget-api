@@ -1,13 +1,146 @@
 openapi: 3.0.1
+
 info:
   title: Personal Budget API
   version: 0.1.0
   description: API to manage personal budget envelopes and track transactions.
+  
 servers:
   - url: http://localhost:3000
+  
 tags:
   - name: Envelopes
     description: Manage budget envelopes
   - name: Transactions
     description: Manage transactions for envelopes
-paths: {}
+    
+paths:
+
+  /envelopes:
+  
+    get:
+      tags: [Envelopes]
+      summary: Get all envelopes
+      responses:
+        '200':
+          description: List of envelopes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Envelope'
+        
+    post:
+      tags: [Envelopes]
+      summary: Create a new envelope
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnvelopeInput'
+      responses:
+        '201':
+          description: Envelope created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        
+  /envelopes/{id}:
+  
+    get:
+      tags: [Envelopes]
+      summary: Get envelope by ID
+      parameters:
+        - $ref: '#/components/parameters/EnvelopeId'
+      responses:
+        '200':
+          description: Envelope found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '404':
+          description: Envelope not found
+          
+    put:
+      tags: [Envelopes]
+      summary: Update envelope by ID
+      parameters:
+        - $ref: '#/components/parameters/EnvelopeId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnvelopeInput'
+      responses:
+        '200':
+          description: Envelope updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '404':
+          description: Envelope not found
+          
+    delete:
+      tags: [Envelopes]
+      summary: Delete envelope by ID
+      parameters:
+        - $ref: '#/components/parameters/EnvelopeId'
+      responses:
+        '204':
+          description: Envelope deleted
+        '404':
+          description: Envelope not found
+      
+components:
+
+  parameters:
+  
+    EnvelopeId:
+      name: id
+      in: path
+      required: true
+      description: The ID of the envelope
+      schema:
+        type: integer
+        example: 1
+        
+  schemas:
+  
+    Envelope:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Groceries
+        budget:
+          type: number
+          format: float
+          example: 500
+        balance:
+          type: number
+          format: float
+          readOnly: true
+          example: 250
+          
+    EnvelopeInput:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Groceries
+        budget:
+          type: number
+          format: float
+          example: 500
+      required:
+        - name
+        - budget
