@@ -2,8 +2,11 @@ openapi: 3.0.1
 
 info:
   title: Personal Budget API
-  version: 0.1.0
-  description: API to manage personal budget envelopes and track transactions.
+  version: 1.0.0
+  description: >
+    API to manage personal budget envelopes and track transactions.
+    Users can create envelopes, assign a budget to each one, and record
+    transactions that affect envelope balances.
   
 servers:
   - url: http://localhost:3000
