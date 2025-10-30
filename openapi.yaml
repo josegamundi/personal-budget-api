@@ -5,4 +5,9 @@ info:
   description: API to manage personal budget envelopes and track transactions.
 servers:
   - url: http://localhost:3000
+tags:
+  - name: Envelopes
+    description: Manage budget envelopes
+  - name: Transactions
+    description: Manage transactions for envelopes
 paths: {}
