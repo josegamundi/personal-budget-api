@@ -30,6 +30,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Envelope'
+        '500':
+          $ref: '#/components/responses/ServerError'
         
     post:
       tags: [Envelopes]
@@ -47,6 +49,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Envelope'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
         
   /envelopes/{id}:
   
@@ -63,7 +69,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Envelope'
         '404':
-          description: Envelope not found
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
           
     put:
       tags: [Envelopes]
@@ -83,8 +91,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Envelope'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '404':
-          description: Envelope not found
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
           
     delete:
       tags: [Envelopes]
@@ -95,7 +107,9 @@ paths:
         '204':
           description: Envelope deleted
         '404':
-          description: Envelope not found
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
           
   /transactions:
   
@@ -112,7 +126,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Transaction'
         '500':
-          description: Server error
+          $ref: '#/components/responses/ServerError'
     
     post:
       tags: [Transactions]
@@ -131,11 +145,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Transaction'
         '400':
-          description: Invalid input (e.g., insufficient balance, missing fields)
+          $ref: '#/components/responses/BadRequest'
         '404':
-          description: One or more envelopes not found
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Server error
+          $ref: '#/components/responses/ServerError'
           
   /transactions/{id}:
 
@@ -152,7 +166,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Transaction'
         '404':
-          description: Transaction not found
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
           
     delete:
       tags: [Transactions]
@@ -163,7 +179,9 @@ paths:
         '204':
           description: Transaction deleted
         '404':
-          description: Transaction not found
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
       
 components:
 
@@ -283,3 +301,37 @@ components:
           example: Dinner at a restaurant
       required: [transactionType, amount]
     
+  responses:
+
+    BadRequest:
+      description: Bad Request — invalid or missing parameters
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Invalid input data. Please check the request body.
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: The requested resource was not found.
+
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: An unexpected error occurred on the server.
